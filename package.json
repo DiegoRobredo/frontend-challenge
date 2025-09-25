@@ -1,15 +1,26 @@
 {
-  "name": "frontend-challenge",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "typescript": "~5.8.3",
-    "vite": "^7.1.7"
-  }
+    "name": "frontend-challenge",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "preview": "vite preview",
+        "prepare": "husky"
+    },
+    "devDependencies": {
+        "@eslint/js": "9.36.0",
+        "eslint": "9.36.0",
+        "eslint-config-prettier": "10.1.8",
+        "eslint-plugin-prettier": "5.5.4",
+        "globals": "16.4.0",
+        "husky": "9.1.7",
+        "jiti": "^2.6.0",
+        "lint-staged": "16.2.1",
+        "prettier": "3.6.2",
+        "typescript": "5.8.3",
+        "typescript-eslint": "8.44.1",
+        "vite": "7.1.7"
+    }
 }
