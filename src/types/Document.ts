@@ -1,4 +1,7 @@
 import type { TContributor } from '@/types/Contributor'
+
+type Version = `${number}.${number}.${number}`
+
 export type TDocument = {
     Attachments: string[]
     Contributors: TContributor[]
@@ -6,5 +9,5 @@ export type TDocument = {
     ID: string
     Title: string
     UpdatedAt?: string
-    Version: string // p.ej. "5.3.15"
+    Version: Version
 }
