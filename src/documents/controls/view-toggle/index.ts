@@ -64,7 +64,7 @@ export class ViewToggle extends HTMLElement {
         if (notify) {
             this.dispatchEvent(
                 new CustomEvent('view-change', {
-                    detail: { value },
+                    detail: { mode: value },
                     bubbles: true,
                     composed: true,
                 })

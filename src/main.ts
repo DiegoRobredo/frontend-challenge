@@ -8,18 +8,10 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     </header>
     <main>
       <h1>Documents</h1>
-      <div>
-        <sort-box></sort-box>
-        <view-toggle></view-toggle>
+      <documents-section></documents-section>
+      <div class="actions">
+        <button type="button" class="add-document" aria-label="Add document">+ Add document</button>
       </div>
-      <section>
-        <docs-table id="docs-table" src="http://localhost:8080/documents"></docs-table>
-        <docs-grid id="docs-grid" src="http://localhost:8080/documents"></docs-grid>
-
-        <div class="actions">
-          <button type="button" class="add-document" aria-label="Add document">+ Add document</button>
-        </div>
-      </section>
       
     </main>
   </div>
