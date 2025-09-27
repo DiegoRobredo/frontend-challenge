@@ -1,16 +1,36 @@
 import type { TViewMode } from '@/types/ViewMode'
-import { ViewToggle } from '../controls/view-toggle'
+import type { TDocument } from '@/types/Document'
+import { DocsTable } from '../table'
+import { DocsGrid } from '../grid'
 
 export class DocumentsSection extends HTMLElement {
     private mode: TViewMode = 'list'
-
-    private toggle!: ViewToggle
+    private data: TDocument[] = []
 
     connectedCallback() {
         this.render()
+        this.fetchAndFillData()
     }
 
-    private render(): void {
+    private async fetchData(): Promise<void> {
+        this.data = await fetch('http://localhost:8080/documents').then((res) =>
+            res.json()
+        )
+    }
+
+    private fetchAndFillData = async () => {
+        await this.fetchData()
+        ;(
+            this.querySelector('#docsTable') as DocsTable & {
+                data: TDocument[]
+            }
+        ).data = this.data
+        ;(
+            this.querySelector('#docsGrid') as DocsGrid & { data: TDocument[] }
+        ).data = this.data
+    }
+
+    private async render(): Promise<void> {
         this.innerHTML = `
       <header class="toolbar">
         <view-toggle id="toggle"></view-toggle>
@@ -25,8 +45,6 @@ export class DocumentsSection extends HTMLElement {
         <docs-grid id="docsGrid"></docs-grid>
       </section>
     `
-
-        this.toggle = this.querySelector('#toggle') as ViewToggle
 
         // 1) Cambiar vista según el toggle
         this.addEventListener('view-change', (e) => {

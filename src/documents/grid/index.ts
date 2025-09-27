@@ -3,6 +3,15 @@ import type { TDocument } from '@/types/Document'
 export class DocsGrid extends HTMLElement {
     private _data: TDocument[] = []
 
+    get data() {
+        return this._data
+    }
+
+    set data(value: TDocument[]) {
+        this._data = Array.isArray(value) ? value : []
+        this.render()
+    }
+
     connectedCallback() {
         this.render()
     }
@@ -34,11 +43,7 @@ export class DocsGrid extends HTMLElement {
     `
     }
 
-    private async render(): Promise<void> {
-        this._data = await fetch('http://localhost:8080/documents').then(
-            (res) => res.json()
-        )
-
+    private render(): void {
         const cards = this._data.map((d) => this.renderCard(d)).join('')
 
         this.innerHTML = `

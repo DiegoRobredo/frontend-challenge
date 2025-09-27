@@ -4,6 +4,15 @@ import type { TDocument } from '@/types/Document'
 export class DocsTable extends HTMLElement {
     private _data: TDocument[] = []
 
+    get data() {
+        return this._data
+    }
+
+    set data(value: TDocument[]) {
+        this._data = Array.isArray(value) ? value : []
+        this.render()
+    }
+
     connectedCallback() {
         // Render inicial (estado vacío/loading)
         this.render()
@@ -31,11 +40,7 @@ export class DocsTable extends HTMLElement {
     `
     }
 
-    private async render(): Promise<void> {
-        this._data = await fetch('http://localhost:8080/documents').then(
-            (res) => res.json()
-        )
-
+    private render(): void {
         const rows = this._data.map((d) => this.renderRow(d)).join('')
         this.innerHTML = `
       <table class="docs-table">
