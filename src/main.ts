@@ -1,24 +1,25 @@
 import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import '@fortawesome/fontawesome-free/css/all.min.css'
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
+  <div class="container">
+    <header class="header">
+      <notification-button></notification-button>
+    </header>
+    <main>
+      <h1>Documents</h1>
+      <div>
+        <sort-box></sort-box>
+        <view-toggle></view-toggle>
+      </div>
+      <section>
+        <docs-table id="docs-table" src="http://localhost:8080/documents"></docs-table>
+
+        <div class="actions">
+          <button type="button" class="add-document" aria-label="Add document">+ Add document</button>
+        </div>
+      </section>
+      
+    </main>
   </div>
 `
-
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
