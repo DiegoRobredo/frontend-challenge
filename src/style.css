@@ -40,6 +40,7 @@ h1 {
     margin: 0 auto;
     padding: 2rem;
     text-align: center;
+    width: 100%;
 }
 
 .logo {
@@ -93,4 +94,15 @@ button:focus-visible {
     button {
         background-color: #f9f9f9;
     }
+}
+
+/********New styles********/
+.docs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.doc-card__list {
+  list-style: none;
 }
