@@ -1,24 +1,23 @@
-// components/view-toggle.ts
-type ViewMode = 'list' | 'grid'
+import type { TViewMode } from '@/types/ViewMode'
 
 export class ViewToggle extends HTMLElement {
-    private _value: ViewMode = 'list'
+    private _mode: TViewMode = 'list'
     private btnList!: HTMLButtonElement
     private btnGrid!: HTMLButtonElement
 
     // handler únicos para poder quitarlos en disconnectedCallback
     private onClick = (ev: Event) => {
         const target = ev.currentTarget as HTMLButtonElement
-        this.setValue(target.id as ViewMode, true)
+        this.setMode(target.id as TViewMode, true)
     }
 
     // API pública (solo propiedad; no reflejamos a atributos)
-    get value(): ViewMode {
-        return this._value
+    get mode(): TViewMode {
+        return this._mode
     }
 
-    set value(v: ViewMode) {
-        this.setValue(v, false)
+    set mode(m: TViewMode) {
+        this.setMode(m, false)
     }
 
     connectedCallback() {
@@ -47,7 +46,7 @@ export class ViewToggle extends HTMLElement {
         this.btnGrid.addEventListener('click', this.onClick)
 
         // sincroniza estado inicial (por si setearon .value antes de conectarse)
-        this.applyAriaState(this._value)
+        this.applyAriaState(this._mode)
     }
 
     disconnectedCallback() {
@@ -56,16 +55,16 @@ export class ViewToggle extends HTMLElement {
     }
 
     // --- helpers ---
-    private setValue(v: ViewMode, notify: boolean) {
-        if (v !== 'list' && v !== 'grid') return
-        if (this._value === v) return
+    private setMode(value: TViewMode, notify: boolean) {
+        if (value !== 'list' && value !== 'grid') return
+        if (this._mode === value) return
 
-        this._value = v
-        this.applyAriaState(v)
+        this._mode = value
+        this.applyAriaState(value)
         if (notify) {
             this.dispatchEvent(
                 new CustomEvent('view-change', {
-                    detail: { value: v },
+                    detail: { value },
                     bubbles: true,
                     composed: true,
                 })
@@ -73,7 +72,7 @@ export class ViewToggle extends HTMLElement {
         }
     }
 
-    private applyAriaState(active: ViewMode) {
+    private applyAriaState(active: TViewMode) {
         const isList = active === 'list'
         this.btnList.setAttribute('aria-selected', String(isList))
         this.btnGrid.setAttribute('aria-selected', String(!isList))
@@ -86,7 +85,7 @@ export class ViewToggle extends HTMLElement {
 const tag = 'view-toggle'
 if (!customElements.get(tag)) customElements.define(tag, ViewToggle)
 
-// Tipado global (si prefieres, muévelo a types/custom-elements.d.ts)
+// Tipado global
 declare global {
     interface HTMLElementTagNameMap {
         'view-toggle': ViewToggle
