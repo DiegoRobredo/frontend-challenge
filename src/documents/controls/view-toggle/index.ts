@@ -21,6 +21,21 @@ export class ViewToggle extends HTMLElement {
     }
 
     connectedCallback() {
+        this.render()
+
+        // refs
+        this.btnList = this.querySelector('#list') as HTMLButtonElement
+        this.btnGrid = this.querySelector('#grid') as HTMLButtonElement
+
+        // listeners
+        this.btnList.addEventListener('click', this.onClick)
+        this.btnGrid.addEventListener('click', this.onClick)
+
+        // sincroniza estado inicial (por si setearon .value antes de conectarse)
+        this.applyAriaState(this._mode)
+    }
+
+    private render(): void {
         // Render inicial
         this.innerHTML = `
       <div class="segmented-control" role="tablist" aria-label="View mode">
@@ -36,17 +51,6 @@ export class ViewToggle extends HTMLElement {
         </button>
       </div>
     `
-
-        // refs
-        this.btnList = this.querySelector('#list') as HTMLButtonElement
-        this.btnGrid = this.querySelector('#grid') as HTMLButtonElement
-
-        // listeners
-        this.btnList.addEventListener('click', this.onClick)
-        this.btnGrid.addEventListener('click', this.onClick)
-
-        // sincroniza estado inicial (por si setearon .value antes de conectarse)
-        this.applyAriaState(this._mode)
     }
 
     disconnectedCallback() {

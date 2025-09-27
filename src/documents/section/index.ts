@@ -1,14 +1,33 @@
 import type { TViewMode } from '@/types/ViewMode'
-import type { TDocument } from '@/types/Document'
+import type { TSortField } from '@/types/SortField'
+import type { TDocument, TDocumentVersion } from '@/types/Document'
 import { DocsTable } from '../table'
 import { DocsGrid } from '../grid'
 
 export class DocumentsSection extends HTMLElement {
     private mode: TViewMode = 'list'
     private data: TDocument[] = []
+    private table: DocsTable | null = null
+    private grid: DocsGrid | null = null
 
     connectedCallback() {
         this.render()
+
+        this.table = this.querySelector('#docsTable') as DocsTable
+        this.grid = this.querySelector('#docsGrid') as DocsGrid
+
+        // Cambiar vista según el toggle
+        this.addEventListener('view-change', (e) => {
+            const viewMode = (e as CustomEvent<{ mode: TViewMode }>).detail.mode
+            this.setView(viewMode)
+        })
+
+        // Cambiar los datos según la ordenación
+        this.addEventListener('sort-change', (e) => {
+            const field = (e as CustomEvent<{ field: TSortField }>).detail.field
+            this.setSort(field)
+        })
+
         this.fetchAndFillData()
     }
 
@@ -18,16 +37,14 @@ export class DocumentsSection extends HTMLElement {
         )
     }
 
-    private fetchAndFillData = async () => {
+    private async fetchAndFillData(): Promise<void> {
         await this.fetchData()
-        ;(
-            this.querySelector('#docsTable') as DocsTable & {
-                data: TDocument[]
-            }
-        ).data = this.data
-        ;(
-            this.querySelector('#docsGrid') as DocsGrid & { data: TDocument[] }
-        ).data = this.data
+        this.renderContainersData()
+    }
+
+    private renderContainersData(): void {
+        if (this.table) this.table.data = this.data
+        if (this.grid) this.grid.data = this.data
     }
 
     private async render(): Promise<void> {
@@ -45,12 +62,6 @@ export class DocumentsSection extends HTMLElement {
         <docs-grid id="docsGrid"></docs-grid>
       </section>
     `
-
-        // 1) Cambiar vista según el toggle
-        this.addEventListener('view-change', (e) => {
-            const viewMode = (e as CustomEvent<{ mode: TViewMode }>).detail.mode
-            this.setView(viewMode)
-        })
 
         this.setView(this.mode)
     }
@@ -78,6 +89,40 @@ export class DocumentsSection extends HTMLElement {
             show(gridSec)
             hide(listSec)
         }
+    }
+
+    private setSort(field: TSortField): void {
+        if (!field) return this.renderContainersData()
+
+        //TODO: Refactor to improve cleanliness
+        // Sort based on field
+        const sorted = [...this.data].sort((a, b) => {
+            if (field === 'name') {
+                return a.Title.localeCompare(b.Title)
+            } else if (field === 'date') {
+                return (
+                    new Date(b.CreatedAt).getTime() -
+                    new Date(a.CreatedAt).getTime()
+                )
+            } else if (field === 'version') {
+                return this.compareVersions(a.Version, b.Version)
+            }
+            return 0
+        })
+
+        this.data = sorted
+        this.renderContainersData()
+    }
+
+    compareVersions(v1: TDocumentVersion, v2: TDocumentVersion): number {
+        const toNumberArray = (version: TDocumentVersion): number[] => {
+            return version.split('.').map((num) => parseInt(num, 10))
+        }
+
+        const arr1 = toNumberArray(v1)
+        const arr2 = toNumberArray(v2)
+
+        return arr1[0] - arr2[0] || arr1[1] - arr2[1] || arr1[2] - arr2[2]
     }
 }
 
