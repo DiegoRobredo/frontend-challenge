@@ -1,4 +1,4 @@
-:root {
+/* :root {
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
@@ -22,13 +22,13 @@ a:hover {
     color: #535bf2;
 }
 
+*/
 body {
+    background-color: #f2f2f2;
     margin: 0;
-    display: flex;
-    place-items: center;
-    min-width: 320px;
-    min-height: 100vh;
+    height: 100dvh;
 }
+/*
 
 h1 {
     font-size: 3.2em;
@@ -94,15 +94,165 @@ button:focus-visible {
     button {
         background-color: #f9f9f9;
     }
-}
+} */
 
 /********New styles********/
 .docs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+.list {
+    list-style: none;
+}
+
+/*HEADER*/
+.header {
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+.notification-element button {
+    cursor: pointer;
+}
+
+.notification-element[count='0'] {
+    visibility: hidden;
+}
+
+.icon-wrapper {
+    position: relative;
+    display: inline-flex;
+}
+
+.badge {
+    position: absolute;
+    top: -0.3rem;
+    right: -0.4rem;
+    background: blue;
+    color: white;
+    font-size: 0.5rem;
+    border-radius: 100%;
+    padding: 0.1rem 0.35rem;
+    text-align: center;
+    aspect-ratio: 1;
+}
+
+/*MAIN CONTENT*/
+.main-content {
+    padding: 1rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.main-title {
+    margin-top: 0;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.segmented-control {
+    display: inline-flex;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.segmented-control__button {
+    cursor: pointer;
+    border: none;
+}
+
+.segmented-control__button[aria-selected='true'] {
+    background-color: #333333;
+    color: white;
+}
+
+.segmented-control .segmented-control__button:not(:first-child) {
+    border-left: 1px solid #ccc;
+}
+
+.docs-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 1rem;
+}
+
+.docs-table__row {
+    background-color: white;
+}
+
+.docs-table thead tr th {
+    text-align: left;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    color: #999999;
+}
+
+.docs-table tbody {
+    overflow-y: auto;
+}
+
+.docs-table tbody tr td,
+.docs-table tbody tr th {
+    padding: 0.5rem 1rem;
+}
+
+.docs-table__list {
+    padding-inline: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.docs-table__list li {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.docs-table__row__header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.doc-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #333;
+    text-decoration: none;
+}
+
+.doc-version {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.doc-card {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    padding: 1rem;
+    align-items: center;
 }
 
 .doc-card__list {
-  list-style: none;
+    padding: 0;
+}
+
+.doc-card__list li {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.docs-grid {
+    margin-top: 1.75rem;
 }

@@ -18,10 +18,10 @@ startWS((notification: TNotification) => {
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <header class="header">
-      <notification-button id="notifBtn"></notification-button>
+      <notification-button class="notification-element" id="notifBtn"></notification-button>
     </header>
-    <main>
-      <h1>Documents</h1>
+    <main class="main-content">
+      <h1 class="main-title">Documents</h1>
       <documents-section></documents-section>
       <button commandfor="mydialog" command="show-modal" type="button" class="add-document" aria-label="Add document">+ Add document</button>
       <dialog id="mydialog">

@@ -25,15 +25,15 @@ export class DocsTable extends HTMLElement {
             .join('')
 
         return `
-      <tr data-id="${documents.ID}">
+      <tr class="docs-table__row" data-id="${documents.ID}">
         <th scope="row">
-          <div>
-            <a href="#" class="doc-title">${documents.Title}</a>
-            <span class="doc-meta">Version ${documents.Version}</span>
+          <div class="docs-table__row__header">
+            <span class="doc-title">${documents.Title}</span>
+            <span class="doc-version">Version ${documents.Version}</span>
           </div>
         </th>
-        <td><ul>${contribs}</ul></td>
-        <td><ul>${atts}</ul></td>
+        <td class="doc-cell"><ul class="list docs-table__list" >${contribs}</ul></td>
+        <td class="doc-cell"><ul class="list docs-table__list">${atts}</ul></td>
       </tr>
     `
     }

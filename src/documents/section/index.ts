@@ -93,8 +93,8 @@ export class DocumentsSection extends HTMLElement {
     private render(): void {
         this.innerHTML = `
       <header class="toolbar">
-        <view-toggle id="toggle"></view-toggle>
         <sort-box id="sorter"></sort-box>
+        <view-toggle id="toggle"></view-toggle>
       </header>
 
       <section id="view-list">

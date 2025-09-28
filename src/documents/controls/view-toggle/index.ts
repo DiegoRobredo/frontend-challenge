@@ -39,12 +39,10 @@ export class ViewToggle extends HTMLElement {
         <button class="segmented-control__button" role="tab"
                 aria-selected="true" aria-controls="list-tab" id="list">
           <i class="fa-solid fa-list" aria-hidden="true"></i>
-          <span class="sr-only">List view</span>
         </button>
         <button class="segmented-control__button" role="tab"
                 aria-selected="false" aria-controls="grid-tab" id="grid" tabindex="-1">
           <i class="fa-solid fa-grip" aria-hidden="true"></i>
-          <span class="sr-only">Grid view</span>
         </button>
       </div>
     `

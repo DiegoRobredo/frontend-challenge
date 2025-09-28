@@ -29,14 +29,14 @@ export class DocsGrid extends HTMLElement {
 
         return `
       <article class="doc-card" data-id="${document.ID}">
-        <h3 class="doc-card__title">${document.Title}</h3>
-        <div class="doc-card__version">Version ${document.Version}</div>
+        <span class="doc-title">${document.Title}</span>
+        <div class="doc-version">Version ${document.Version}</div>
 
-        <ul class="doc-card__list doc-card__contributors">
+        <ul class="list doc-card__list">
           ${contributors}
         </ul>
 
-        <ul class="doc-card__list doc-card__attachments">
+        <ul class="list doc-card__list">
           ${attachments}
         </ul>
       </article>
