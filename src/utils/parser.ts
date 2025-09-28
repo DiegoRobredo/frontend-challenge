@@ -1,5 +1,4 @@
-import type { TDocument } from '@/types/Document'
-import type { TNotification } from '@/types/Notification'
+import type { TDocument, TNotification } from '@/types'
 
 export function fromNotificationToDocument(
     notification: TNotification

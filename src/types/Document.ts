@@ -1,4 +1,4 @@
-import type { TContributor } from '@/types/Contributor'
+import type { TContributor } from '@/types'
 
 type Version = `${number}.${number}.${number}`
 

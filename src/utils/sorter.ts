@@ -1,6 +1,4 @@
-import type { TDocument } from '@/types/Document'
-import type { TSortField } from '@/types/SortField'
-import type { TDocumentVersion } from '@/types/Document'
+import type { TDocument, TSortField, TDocumentVersion } from '@/types'
 
 function SortByName(a: TDocument, b: TDocument): number {
     return a.Title.localeCompare(b.Title)

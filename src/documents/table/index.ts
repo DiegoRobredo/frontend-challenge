@@ -1,4 +1,4 @@
-import type { TDocument } from '@/types/Document'
+import type { TDocument } from '@/types'
 
 export class DocsTable extends HTMLElement {
     private _data: TDocument[] = []

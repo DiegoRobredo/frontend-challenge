@@ -1,4 +1,4 @@
-import type { TNotification } from '@/types/Notification'
+import type { TNotification } from '@/types'
 
 export function startWS(
     onMessage: (notification: TNotification) => void,

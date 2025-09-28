@@ -1,4 +1,4 @@
-import type { TSortField } from '@/types/SortField'
+import type { TSortField } from '@/types'
 
 export class SortBox extends HTMLElement {
     private _field: TSortField = ''

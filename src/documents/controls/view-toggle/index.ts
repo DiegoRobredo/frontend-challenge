@@ -1,4 +1,4 @@
-import type { TViewMode } from '@/types/ViewMode'
+import type { TViewMode } from '@/types'
 
 export class ViewToggle extends HTMLElement {
     private _mode: TViewMode = 'list'
