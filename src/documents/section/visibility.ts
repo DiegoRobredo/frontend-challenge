@@ -1,4 +1,4 @@
-import type { TViewMode } from '@/types/ViewMode'
+import type { TViewMode } from '@/types'
 
 function showElement(el: HTMLElement) {
     el.hidden = false

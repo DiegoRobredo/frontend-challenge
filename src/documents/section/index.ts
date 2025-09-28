@@ -1,7 +1,4 @@
-import type { TViewMode } from '@/types/ViewMode'
-import type { TSortField } from '@/types/SortField'
-import type { TDocument } from '@/types/Document'
-import type { TNotification } from '@/types/Notification'
+import type { TViewMode, TSortField, TDocument, TNotification } from '@/types'
 import { NotificationButton } from '../../notification-button'
 import { sortDocuments } from '@/utils/sorter'
 import { fromNotificationToDocument } from '@/utils/parser'
@@ -30,18 +27,19 @@ export class DocumentsSection extends HTMLElement {
             '#notifBtn'
         ) as NotificationButton
 
-        // Cambiar vista según el toggle
+        // Change view with toggle
         this.addEventListener('view-change', (e) => {
             const viewMode = (e as CustomEvent<{ mode: TViewMode }>).detail.mode
             this.setView(viewMode)
         })
 
-        // Cambiar los datos según la ordenación
+        // Sort data with sorter
         this.addEventListener('sort-change', (e) => {
             const field = (e as CustomEvent<{ field: TSortField }>).detail.field
             this.setSort(field)
         })
 
+        // Update notifications counter
         document.addEventListener('notification-received', (e) => {
             const notification = (
                 e as CustomEvent<{ notification: TNotification }>
@@ -50,6 +48,7 @@ export class DocumentsSection extends HTMLElement {
             this.updateCounter()
         })
 
+        // On notification click, add new documents to the list/grid and clear notifications
         document.addEventListener('notification-click', () => {
             this.data = this.data.concat(
                 this.notifications.map(fromNotificationToDocument)
@@ -59,8 +58,13 @@ export class DocumentsSection extends HTMLElement {
             this.updateCounter()
         })
 
-        this.addEventListener('refresh-data', () => {
-            this.fetchAndFillData()
+        // Listen for new documents added via the form
+        document.addEventListener('document-added', (e) => {
+            const newDoc: TDocument = (
+                e as CustomEvent<{ document: TDocument }>
+            ).detail.document
+            this.data = this.data.concat(newDoc)
+            this.renderContainersData()
         })
 
         this.fetchAndFillData()
