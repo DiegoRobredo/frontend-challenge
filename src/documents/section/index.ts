@@ -2,8 +2,6 @@ import type { TViewMode } from '@/types/ViewMode'
 import type { TSortField } from '@/types/SortField'
 import type { TDocument } from '@/types/Document'
 import type { TNotification } from '@/types/Notification'
-import { DocsTable } from '../table'
-import { DocsGrid } from '../grid'
 import { NotificationButton } from '../../notification-button'
 import { sortDocuments } from '@/utils/sorter'
 import { fromNotificationToDocument } from '@/utils/parser'
@@ -13,16 +11,21 @@ export class DocumentsSection extends HTMLElement {
     private mode: TViewMode = 'list'
     private sortField: TSortField = ''
     private data: TDocument[] = []
-    private notifButton: NotificationButton | null = null
-    private table: DocsTable | null = null
-    private grid: DocsGrid | null = null
+    private notifButton: HTMLElementTagNameMap['notification-button'] | null =
+        null
+    private table: HTMLElementTagNameMap['docs-table'] | null = null
+    private grid: HTMLElementTagNameMap['docs-grid'] | null = null
     private notifications: TNotification[] = []
 
     connectedCallback() {
         this.render()
 
-        this.table = this.querySelector('#docsTable') as DocsTable
-        this.grid = this.querySelector('#docsGrid') as DocsGrid
+        this.table = this.querySelector(
+            '#docsTable'
+        ) as HTMLElementTagNameMap['docs-table']
+        this.grid = this.querySelector(
+            '#docsGrid'
+        ) as HTMLElementTagNameMap['docs-grid']
         this.notifButton = document.querySelector(
             '#notifBtn'
         ) as NotificationButton
@@ -123,11 +126,4 @@ export class DocumentsSection extends HTMLElement {
     }
 }
 
-if (!customElements.get('documents-section'))
-    customElements.define('documents-section', DocumentsSection)
-
-declare global {
-    interface HTMLElementTagNameMap {
-        'documents-section': DocumentsSection
-    }
-}
+customElements.define('documents-section', DocumentsSection)

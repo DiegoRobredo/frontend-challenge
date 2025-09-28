@@ -1,4 +1,3 @@
-// components/docs-table.ts
 import type { TDocument } from '@/types/Document'
 
 export class DocsTable extends HTMLElement {
@@ -14,7 +13,6 @@ export class DocsTable extends HTMLElement {
     }
 
     connectedCallback() {
-        // Render inicial (estado vacío/loading)
         this.render()
     }
 
@@ -59,11 +57,8 @@ export class DocsTable extends HTMLElement {
     }
 }
 
-// Registro seguro
-const tag = 'docs-table'
-if (!customElements.get(tag)) customElements.define(tag, DocsTable)
+customElements.define('docs-table', DocsTable)
 
-// Tipado global (si prefieres, muévelo a types/custom-elements.d.ts)
 declare global {
     interface HTMLElementTagNameMap {
         'docs-table': DocsTable

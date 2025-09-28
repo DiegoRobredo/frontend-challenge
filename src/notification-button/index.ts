@@ -1,8 +1,3 @@
-function toInt(value: string | null, fallback = 0): number {
-    const n = Number(value)
-    return Number.isFinite(n) ? n : fallback
-}
-
 export class NotificationButton extends HTMLElement {
     private _count: number = 0
     private badge: HTMLSpanElement | null = null
@@ -23,17 +18,14 @@ export class NotificationButton extends HTMLElement {
 
     // lifecycle
     connectedCallback(): void {
-        // inicializa desde atributos si existen
         if (this.hasAttribute('count')) {
-            this._count = toInt(this.getAttribute('count'))
+            this._count = Number(this.getAttribute('count'))
         }
 
-        // render inicial
         this.render()
 
         this.badge = this.querySelector('#notifBadge') as HTMLSpanElement
 
-        // ejemplo: reenviar el click del botón como evento del custom element
         const button = this.querySelector('button')
         button?.addEventListener('click', () => {
             this.dispatchEvent(
@@ -62,10 +54,7 @@ export class NotificationButton extends HTMLElement {
     }
 }
 
-const tag = 'notification-button'
-customElements.define(tag, NotificationButton)
-
-// Aumenta el mapa de tipos para que TS conozca tu custom element
+customElements.define('notification-button', NotificationButton)
 declare global {
     interface HTMLElementTagNameMap {
         'notification-button': NotificationButton

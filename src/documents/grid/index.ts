@@ -54,11 +54,8 @@ export class DocsGrid extends HTMLElement {
     }
 }
 
-// registro seguro
-const tag = 'docs-grid'
-if (!customElements.get(tag)) customElements.define(tag, DocsGrid)
+customElements.define('docs-grid', DocsGrid)
 
-// Tipos globales
 declare global {
     interface HTMLElementTagNameMap {
         'docs-grid': DocsGrid

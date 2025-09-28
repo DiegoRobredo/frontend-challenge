@@ -5,13 +5,11 @@ export class ViewToggle extends HTMLElement {
     private btnList!: HTMLButtonElement
     private btnGrid!: HTMLButtonElement
 
-    // handler únicos para poder quitarlos en disconnectedCallback
     private onClick = (ev: Event) => {
         const target = ev.currentTarget as HTMLButtonElement
         this.setMode(target.id as TViewMode, true)
     }
 
-    // API pública (solo propiedad; no reflejamos a atributos)
     get mode(): TViewMode {
         return this._mode
     }
@@ -23,18 +21,17 @@ export class ViewToggle extends HTMLElement {
     connectedCallback() {
         this.render()
 
-        // refs
+        //TODO: Refactor to support more buttons dynamically
         this.btnList = this.querySelector('#list') as HTMLButtonElement
         this.btnGrid = this.querySelector('#grid') as HTMLButtonElement
 
-        // listeners
         this.btnList.addEventListener('click', this.onClick)
         this.btnGrid.addEventListener('click', this.onClick)
 
-        // sincroniza estado inicial (por si setearon .value antes de conectarse)
         this.applyAriaState(this._mode)
     }
 
+    //TODO: Enable adding more buttons by children insertion in html
     private render(): void {
         // Render inicial
         this.innerHTML = `
@@ -58,7 +55,6 @@ export class ViewToggle extends HTMLElement {
         this.btnGrid?.removeEventListener('click', this.onClick)
     }
 
-    // --- helpers ---
     private setMode(value: TViewMode, notify: boolean) {
         if (value !== 'list' && value !== 'grid') return
         if (this._mode === value) return
@@ -76,6 +72,8 @@ export class ViewToggle extends HTMLElement {
         }
     }
 
+    //Change ARIA attributes and tabindex depending on the active mode
+    //TODO: Open to multiple choices (not only two)
     private applyAriaState(active: TViewMode) {
         const isList = active === 'list'
         this.btnList.setAttribute('aria-selected', String(isList))
@@ -85,11 +83,7 @@ export class ViewToggle extends HTMLElement {
     }
 }
 
-// registro seguro
-const tag = 'view-toggle'
-if (!customElements.get(tag)) customElements.define(tag, ViewToggle)
-
-// Tipado global
+customElements.define('view-toggle', ViewToggle)
 declare global {
     interface HTMLElementTagNameMap {
         'view-toggle': ViewToggle

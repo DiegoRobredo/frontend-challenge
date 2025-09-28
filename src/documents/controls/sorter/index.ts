@@ -1,7 +1,6 @@
 import type { TSortField } from '@/types/SortField'
 
 export class SortBox extends HTMLElement {
-    // Valor interno
     private _field: TSortField = ''
     private sortSelector: HTMLSelectElement | null = null
 
@@ -15,17 +14,15 @@ export class SortBox extends HTMLElement {
     }
 
     connectedCallback() {
-        // Valor inicial desde atributo o por defecto
         this._field = (this.getAttribute('field') as TSortField) || ''
         this.render()
 
         this.sortSelector = this.querySelector('#sort')
-        // Listener del select
+
         this.sortSelector?.addEventListener('change', (e) => {
             const select = e.currentTarget as HTMLSelectElement
             this.field = select.value as TSortField
 
-            // Emite evento personalizado para que <app-root> pueda escucharlo
             this.dispatchEvent(
                 new CustomEvent('sort-change', {
                     detail: { field: this._field },
@@ -53,12 +50,8 @@ export class SortBox extends HTMLElement {
     }
 }
 
-const tag = 'sort-box'
-if (!customElements.get(tag)) {
-    customElements.define(tag, SortBox)
-}
+customElements.define('sort-box', SortBox)
 
-// Declaración global de tipo
 declare global {
     interface HTMLElementTagNameMap {
         'sort-box': SortBox
