@@ -1,20 +1,31 @@
 import type { TViewMode } from '@/types/ViewMode'
 import type { TSortField } from '@/types/SortField'
-import type { TDocument, TDocumentVersion } from '@/types/Document'
+import type { TDocument } from '@/types/Document'
+import type { TNotification } from '@/types/Notification'
 import { DocsTable } from '../table'
 import { DocsGrid } from '../grid'
+import { NotificationButton } from '../../notification-button'
+import { sortDocuments } from '@/utils/sorter'
+import { fromNotificationToDocument } from '@/utils/parser'
+import { changeView } from './visibility'
 
 export class DocumentsSection extends HTMLElement {
     private mode: TViewMode = 'list'
+    private sortField: TSortField = ''
     private data: TDocument[] = []
+    private notifButton: NotificationButton | null = null
     private table: DocsTable | null = null
     private grid: DocsGrid | null = null
+    private notifications: TNotification[] = []
 
     connectedCallback() {
         this.render()
 
         this.table = this.querySelector('#docsTable') as DocsTable
         this.grid = this.querySelector('#docsGrid') as DocsGrid
+        this.notifButton = document.querySelector(
+            '#notifBtn'
+        ) as NotificationButton
 
         // Cambiar vista según el toggle
         this.addEventListener('view-change', (e) => {
@@ -26,6 +37,27 @@ export class DocumentsSection extends HTMLElement {
         this.addEventListener('sort-change', (e) => {
             const field = (e as CustomEvent<{ field: TSortField }>).detail.field
             this.setSort(field)
+        })
+
+        document.addEventListener('notification-received', (e) => {
+            const notification = (
+                e as CustomEvent<{ notification: TNotification }>
+            ).detail.notification
+            this.notifications.push(notification)
+            this.updateCounter()
+        })
+
+        document.addEventListener('notification-click', () => {
+            this.data = this.data.concat(
+                this.notifications.map(fromNotificationToDocument)
+            )
+            this.renderContainersData()
+            this.notifications = []
+            this.updateCounter()
+        })
+
+        this.addEventListener('refresh-data', () => {
+            this.fetchAndFillData()
         })
 
         this.fetchAndFillData()
@@ -43,11 +75,15 @@ export class DocumentsSection extends HTMLElement {
     }
 
     private renderContainersData(): void {
+        //Filtramos al renderizar el contenido para mantener la ordenación en caso de agregar nuevos documentos desde las notificaciones o al cargar un nuevo documento
+        const sorted = sortDocuments(this.data, this.sortField)
+        this.data = sorted
+
         if (this.table) this.table.data = this.data
         if (this.grid) this.grid.data = this.data
     }
 
-    private async render(): Promise<void> {
+    private render(): void {
         this.innerHTML = `
       <header class="toolbar">
         <view-toggle id="toggle"></view-toggle>
@@ -70,59 +106,20 @@ export class DocumentsSection extends HTMLElement {
         if (this.mode === viewMode) return
         this.mode = viewMode
 
-        const listSec = this.querySelector('#view-list') as HTMLElement
-        const gridSec = this.querySelector('#view-grid') as HTMLElement
-
-        const show = (el: HTMLElement) => {
-            el.hidden = false
-            el.removeAttribute('inert')
-        }
-        const hide = (el: HTMLElement) => {
-            el.hidden = true
-            el.setAttribute('inert', '')
-        }
-
-        if (viewMode === 'list') {
-            show(listSec)
-            hide(gridSec)
-        } else {
-            show(gridSec)
-            hide(listSec)
-        }
+        changeView(this, viewMode)
     }
 
     private setSort(field: TSortField): void {
         if (!field) return this.renderContainersData()
+        this.sortField = field
 
-        //TODO: Refactor to improve cleanliness
-        // Sort based on field
-        const sorted = [...this.data].sort((a, b) => {
-            if (field === 'name') {
-                return a.Title.localeCompare(b.Title)
-            } else if (field === 'date') {
-                return (
-                    new Date(b.CreatedAt).getTime() -
-                    new Date(a.CreatedAt).getTime()
-                )
-            } else if (field === 'version') {
-                return this.compareVersions(a.Version, b.Version)
-            }
-            return 0
-        })
-
-        this.data = sorted
         this.renderContainersData()
     }
 
-    compareVersions(v1: TDocumentVersion, v2: TDocumentVersion): number {
-        const toNumberArray = (version: TDocumentVersion): number[] => {
-            return version.split('.').map((num) => parseInt(num, 10))
+    private updateCounter(): void {
+        if (this.notifButton) {
+            this.notifButton.count = this.notifications.length
         }
-
-        const arr1 = toNumberArray(v1)
-        const arr2 = toNumberArray(v2)
-
-        return arr1[0] - arr2[0] || arr1[1] - arr2[1] || arr1[2] - arr2[2]
     }
 }
 
