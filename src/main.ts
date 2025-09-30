@@ -1,6 +1,6 @@
 import './style.css'
 import '@fortawesome/fontawesome-free/css/all.min.css'
-import { startWS } from './server/notificationsSubscription'
+import { startWS } from './server/notifications'
 import type { TNotification, TDocument, TDocumentVersion } from '@/types'
 import { WS_URL } from './server/endpoints'
 import { NewDocumentDialog } from '@/templates/new-document-dialog'

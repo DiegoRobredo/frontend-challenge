@@ -15,3 +15,11 @@ export {
     MONTH_IN_SECONDS,
     YEAR_IN_SECONDS,
 }
+
+export const EVENTS = {
+    VIEW_CHANGE: 'view-change',
+    SORT_CHANGE: 'sort-change',
+    NOTIFICATION_RECEIVED: 'notification-received',
+    NOTIFICATION_CLICK: 'notification-click',
+    DOCUMENT_ADDED: 'document-added',
+}
