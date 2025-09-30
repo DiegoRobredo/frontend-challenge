@@ -1,87 +1,76 @@
-import type { TViewMode } from '@/types'
+import type { TViewMode, ViewChangeDetail } from '@/types'
+import { EVENTS } from '@/utils/constants'
+import { renderShell, setValue } from './interface'
+import { attachEvents } from './events'
+import { MODE, LIST, GRID } from './constants'
 
 export class ViewToggle extends HTMLElement {
-    private _mode: TViewMode = 'list'
-    private btnList!: HTMLButtonElement
-    private btnGrid!: HTMLButtonElement
-
-    private onClick: EventListener = (ev: Event) => {
-        const target = ev.currentTarget as HTMLButtonElement
-        this.setMode(target.id as TViewMode, true)
+    static get observedAttributes() {
+        return [MODE]
     }
+
+    private _mode: TViewMode = LIST
+    private eventsAborter: AbortController | null = null
 
     get mode(): TViewMode {
         return this._mode
     }
 
-    set mode(m: TViewMode) {
-        this.setMode(m, false)
+    set mode(val: TViewMode) {
+        const nextValue = (val ?? LIST) as TViewMode
+        if (nextValue !== LIST && nextValue !== GRID) return
+        //Same value, do nothing
+        if (this._mode === nextValue) return
+
+        this._mode = nextValue
+        this.setAttribute(MODE, nextValue)
+        setValue(this, nextValue)
     }
 
     connectedCallback() {
-        this.render()
+        const attr = (this.getAttribute(MODE) as TViewMode) || this._mode
+        this._mode = attr === GRID ? GRID : LIST
 
-        //TODO: Refactor to support more buttons dynamically
-        this.btnList = this.querySelector('#list') as HTMLButtonElement
-        this.btnGrid = this.querySelector('#grid') as HTMLButtonElement
+        renderShell(this, this._mode)
 
-        this.btnList.addEventListener('click', this.onClick)
-        this.btnGrid.addEventListener('click', this.onClick)
-
-        this.applyAriaState(this._mode)
-    }
-
-    //TODO: Enable adding more buttons by children insertion in html
-    private render(): void {
-        // Render inicial
-        this.innerHTML = `
-      <div class="segmented-control" role="tablist" aria-label="View mode">
-        <button class="segmented-control__button" role="tab"
-                aria-selected="true" aria-controls="list-tab" id="list">
-          <i class="fa-solid fa-list" aria-hidden="true"></i>
-        </button>
-        <button class="segmented-control__button" role="tab"
-                aria-selected="false" aria-controls="grid-tab" id="grid" tabindex="-1">
-          <i class="fa-solid fa-grip" aria-hidden="true"></i>
-        </button>
-      </div>
-    `
+        this.eventsAborter = attachEvents(this, {
+            onChange: (mode) => {
+                this.mode = mode
+                this.publish()
+            },
+        })
     }
 
     disconnectedCallback() {
-        this.btnList?.removeEventListener('click', this.onClick)
-        this.btnGrid?.removeEventListener('click', this.onClick)
+        this.eventsAborter?.abort()
     }
 
-    private setMode(value: TViewMode, notify: boolean) {
-        if (value !== 'list' && value !== 'grid') return
-        if (this._mode === value) return
-
-        this._mode = value
-        this.applyAriaState(value)
-        if (notify) {
-            this.dispatchEvent(
-                new CustomEvent('view-change', {
-                    detail: { mode: value },
-                    bubbles: true,
-                    composed: true,
-                })
-            )
+    attributeChangedCallback(
+        name: string,
+        _old: string | null,
+        val: string | null
+    ) {
+        if (name === MODE) {
+            const next = (val as TViewMode) === GRID ? GRID : LIST
+            this._mode = next
+            setValue(this, next)
         }
     }
 
-    //Change ARIA attributes and tabindex depending on the active mode
-    //TODO: Open to multiple choices (not only two)
-    private applyAriaState(active: TViewMode) {
-        const isList = active === 'list'
-        this.btnList.setAttribute('aria-selected', String(isList))
-        this.btnGrid.setAttribute('aria-selected', String(!isList))
-        this.btnList.tabIndex = isList ? 0 : -1
-        this.btnGrid.tabIndex = isList ? -1 : 0
+    private publish() {
+        const detail: ViewChangeDetail = { mode: this._mode }
+        this.dispatchEvent(
+            new CustomEvent(EVENTS.VIEW_CHANGE, {
+                detail,
+                bubbles: true,
+                composed: true,
+            })
+        )
     }
 }
 
 customElements.define('view-toggle', ViewToggle)
+
 declare global {
     interface HTMLElementTagNameMap {
         'view-toggle': ViewToggle
