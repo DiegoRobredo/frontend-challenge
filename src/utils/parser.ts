@@ -12,6 +12,7 @@ export function fromNotificationToDocument(
             },
         ],
         CreatedAt: notification.Timestamp,
+        UpdatedAt: notification.Timestamp,
         ID: notification.DocumentID,
         Title: notification.DocumentTitle,
         Version: '1.0.0',
