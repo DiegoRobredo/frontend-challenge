@@ -1,5 +1,5 @@
 import type { TDocument } from '@/types'
-import { relativeFormatDate } from '@/utils/formater'
+import { relativeFormatDate } from '@/utils/formatter'
 import { listTemplate } from '@/templates/list'
 
 export function renderShell(root: HTMLElement): void {
