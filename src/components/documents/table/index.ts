@@ -1,5 +1,6 @@
 import type { TDocument } from '@/types'
 import { relativeFormatDate } from '@/utils/formater'
+import { listTemplate } from '@/templates/list'
 
 export class DocsTable extends HTMLElement {
     private _data: TDocument[] = []
@@ -18,12 +19,9 @@ export class DocsTable extends HTMLElement {
     }
 
     private renderRow(documents: TDocument): string {
-        const contribs = (documents.Contributors ?? [])
-            .map((contributor) => `<li>${contributor.Name}</li>`)
-            .join('')
-        const atts = (documents.Attachments ?? [])
-            .map((attachment) => `<li>${attachment}</li>`)
-            .join('')
+        const contribs = (documents.Contributors ?? []).map(
+            (contributor) => contributor.Name
+        )
 
         return `
       <tr class="docs-table__row" data-id="${documents.ID}">
@@ -35,8 +33,8 @@ export class DocsTable extends HTMLElement {
             <span class="doc-date">Updated ${relativeFormatDate(documents.UpdatedAt)}</span>
           </div>
         </th>
-        <td class="doc-cell"><ul class="list docs-table__list" >${contribs}</ul></td>
-        <td class="doc-cell"><ul class="list docs-table__list">${atts}</ul></td>
+        <td class="doc-cell">${listTemplate({ class: 'list docs-table__list' }, contribs)}</td>
+        <td class="doc-cell">${listTemplate({ class: 'list docs-table__list' }, documents.Attachments ?? [])}</td>
       </tr>
     `
     }

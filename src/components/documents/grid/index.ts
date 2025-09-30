@@ -1,5 +1,6 @@
 import { relativeFormatDate } from '@/utils/formater'
 import type { TDocument } from '@/types'
+import { listTemplate } from '@/templates/list'
 
 export class DocsGrid extends HTMLElement {
     private _data: TDocument[] = []
@@ -18,15 +19,9 @@ export class DocsGrid extends HTMLElement {
     }
 
     private renderCard(document: TDocument): string {
-        //TODO: DRY
-        const contributors = (document.Contributors ?? [])
-            .map((contributor) => `<li>${contributor.Name}</li>`)
-            .join('')
-
-        //TODO: DRY
-        const attachments = (document.Attachments ?? [])
-            .map((attachment) => `<li>${attachment}</li>`)
-            .join('')
+        const contributors = (document.Contributors ?? []).map(
+            (contributor) => contributor.Name
+        )
 
         return `
       <article class="doc-card" data-id="${document.ID}">
@@ -34,14 +29,8 @@ export class DocsGrid extends HTMLElement {
         <span class="doc-version">Version ${document.Version}</span>
         <span class="doc-date">Created ${relativeFormatDate(document.CreatedAt)}</span>
         <span class="doc-date">Updated ${relativeFormatDate(document.UpdatedAt)}</span>
-
-        <ul class="list doc-card__list">
-          ${contributors}
-        </ul>
-
-        <ul class="list doc-card__list">
-          ${attachments}
-        </ul>
+        ${listTemplate({ class: 'list docs-table__list' }, contributors)}
+        ${listTemplate({ class: 'list doc-card__list' }, document.Attachments ?? [])}
       </article>
     `
     }
