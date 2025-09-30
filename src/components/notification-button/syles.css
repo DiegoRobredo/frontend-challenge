@@ -1,0 +1,40 @@
+.notification-element button {
+    background-color: var(--button-background);
+    border-radius: 24px;
+    padding: 0.35rem 1rem;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: var(--title-color);
+    border: none;
+}
+
+.notification-element .notif-btn__text {
+    margin-left: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.notification-element[count='0'] {
+    visibility: hidden;
+}
+
+.icon-wrapper {
+    position: relative;
+    display: inline-flex;
+}
+
+.badge {
+    border: 1px solid #f2f2f2;
+    position: absolute;
+    top: -0.3rem;
+    right: -0.4rem;
+    background: var(--link-color);
+    color: var(--control-background);
+    font-size: 0.6rem;
+    border-radius: 100%;
+    padding: 0.15rem;
+    text-align: center;
+    aspect-ratio: 1;
+    min-width: 0.75rem;
+    align-content: center;
+}

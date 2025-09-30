@@ -1,0 +1,18 @@
+.label {
+    color: var(--title-color);
+}
+
+.select {
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: var(--link-color);
+}
+
+.select option {
+    color: var(--text-color);
+}
+
+.select:focus {
+    outline: none;
+}
