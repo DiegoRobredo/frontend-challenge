@@ -1,6 +1,4 @@
-// documents-section.ts
 import type { TDocument, TNotification, TSortField, TViewMode } from '@/types'
-import { NotificationButton } from '@/components/notification-button'
 import { applySort, mergeNotifications } from './data'
 import {
     renderShell,
@@ -24,9 +22,9 @@ export class DocumentsSection extends HTMLElement {
     connectedCallback() {
         renderShell(this)
         this.refs = getRefs(this)
-        this.notifButton = document.querySelector(
-            '#notifBtn'
-        ) as NotificationButton | null
+        this.notifButton = document.querySelector('#notifBtn') as
+            | HTMLElementTagNameMap['notification-button']
+            | null
 
         // Listeners
         this.eventsAborter = attachEvents(this, {
@@ -48,10 +46,7 @@ export class DocumentsSection extends HTMLElement {
             },
         })
 
-        // Render initial data
         this.fetchAndFill()
-
-        // Initial view
         this.setView(this.mode)
     }
 

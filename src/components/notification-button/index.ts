@@ -1,60 +1,70 @@
-export class NotificationButton extends HTMLElement {
-    private _count: number = 0
-    private badge: HTMLSpanElement | null = null
+import { renderShell, setCount } from './interface'
+import { attachEvents } from './events'
+import { EVENTS } from '@/utils/constants'
 
+export class NotificationButton extends HTMLElement {
     static get observedAttributes() {
         return ['count'] as const
     }
+
+    private _count = 0
+    private eventsAborter: AbortController | null = null
 
     get count(): number {
         return this._count
     }
 
     set count(value: number) {
-        this._count = value ?? 0
-        this.setAttribute('count', String(this._count))
-        this.updateCounter()
+        const next = Number.isFinite(value) ? Number(value) : 0
+        if (this._count === next) return
+        this._count = next
+        this.setAttribute('count', String(next))
+        setCount(this, next)
     }
 
-    // lifecycle
     connectedCallback(): void {
         if (this.hasAttribute('count')) {
-            this._count = Number(this.getAttribute('count'))
+            const parsed = Number(this.getAttribute('count'))
+            this._count = Number.isFinite(parsed) ? parsed : 0
         }
 
-        this.render()
+        renderShell(this, this._count)
+        setCount(this, this._count)
 
-        this.badge = this.querySelector('#notifBadge') as HTMLSpanElement
-
-        const button = this.querySelector('button')
-        button?.addEventListener('click', () => {
-            this.dispatchEvent(
-                new CustomEvent('notification-click', {
-                    bubbles: true,
-                    composed: true,
-                })
-            )
+        this.eventsAborter = attachEvents(this, {
+            onClick: () => this.publish(),
         })
     }
 
-    private updateCounter(): void {
-        if (this.badge) this.badge.textContent = String(this._count)
+    disconnectedCallback(): void {
+        this.eventsAborter?.abort()
     }
 
-    render(): void {
-        this.innerHTML = `
-      <button type="button" class="notif-btn">
-        <span class="icon-wrapper">
-          <i class="fa-solid fa-bell" aria-hidden="true"></i>
-          <span id="notifBadge" class="badge" aria-label="Notifications badge">${this._count}</span>
-        </span>
-        <span class="notif-btn__text">New document added</span>
-      </button>
-    `
+    attributeChangedCallback(
+        name: string,
+        _old: string | null,
+        val: string | null
+    ) {
+        if (name === 'count') {
+            const next = Number.isFinite(Number(val)) ? Number(val) : 0
+            this._count = next
+            setCount(this, next)
+        }
+    }
+
+    private publish(): void {
+        this.dispatchEvent(
+            new CustomEvent(EVENTS.NOTIFICATION_CLICK, {
+                detail: {},
+                bubbles: true,
+                composed: true,
+            })
+        )
     }
 }
 
 customElements.define('notification-button', NotificationButton)
+
 declare global {
     interface HTMLElementTagNameMap {
         'notification-button': NotificationButton
