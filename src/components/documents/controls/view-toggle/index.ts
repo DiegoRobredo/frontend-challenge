@@ -5,7 +5,7 @@ export class ViewToggle extends HTMLElement {
     private btnList!: HTMLButtonElement
     private btnGrid!: HTMLButtonElement
 
-    private onClick = (ev: Event) => {
+    private onClick: EventListener = (ev: Event) => {
         const target = ev.currentTarget as HTMLButtonElement
         this.setMode(target.id as TViewMode, true)
     }

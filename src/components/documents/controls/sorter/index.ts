@@ -1,52 +1,68 @@
-import type { TSortField } from '@/types'
+import type { TSortField, SortChangeDetail } from '@/types'
+import { EVENTS } from '@/utils/constants'
+import { renderShell, getRefs, setSelectValue } from './interface'
+import { attachEvents } from './events'
+import { FIELD } from './constants'
 
 export class SortBox extends HTMLElement {
+    static get observedAttributes() {
+        return [FIELD]
+    }
+
     private _field: TSortField = ''
-    private sortSelector: HTMLSelectElement | null = null
+    private refs!: ReturnType<typeof getRefs>
+    private eventsAborter: AbortController | null = null
 
     get field(): TSortField {
         return this._field
     }
 
     set field(val: TSortField) {
-        this._field = val
-        this.setAttribute('field', val)
+        const next = (val ?? '') as TSortField
+        if (this._field === next) return
+        this._field = next
+        this.setAttribute(FIELD, next)
+        setSelectValue(this.refs?.select ?? null, next)
     }
 
     connectedCallback() {
-        this._field = (this.getAttribute('field') as TSortField) || ''
-        this.render()
+        this._field = (this.getAttribute(FIELD) as TSortField) || this._field
 
-        this.sortSelector = this.querySelector('#sort')
+        renderShell(this, this._field)
+        this.refs = getRefs(this)
 
-        this.sortSelector?.addEventListener('change', (e) => {
-            const select = e.currentTarget as HTMLSelectElement
-            this.field = select.value as TSortField
-
-            this.dispatchEvent(
-                new CustomEvent('sort-change', {
-                    detail: { field: this._field },
-                    bubbles: true,
-                    composed: true,
-                })
-            )
+        this.eventsAborter = attachEvents(this, {
+            onChange: (field) => {
+                this.field = field
+                this.publish()
+            },
         })
     }
 
-    render() {
-        this.innerHTML = `
-      <div class="sort-box">
-        <label class="label" for="sort">Sort by:</label>
-        <select class="select" name="sort" id="sort">
-          <option value="" disabled ${this._field === '' ? 'selected' : ''} hidden>
-            Select sorting…
-          </option>
-          <option value="name" ${this._field === 'name' ? 'selected' : ''}>Name</option>
-          <option value="date" ${this._field === 'date' ? 'selected' : ''}>Date</option>
-          <option value="version" ${this._field === 'version' ? 'selected' : ''}>Version</option>
-        </select>
-      </div>
-    `
+    disconnectedCallback() {
+        this.eventsAborter?.abort()
+    }
+
+    attributeChangedCallback(
+        name: string,
+        _old: string | null,
+        val: string | null
+    ) {
+        if (name === FIELD) {
+            this._field = (val as TSortField) || ''
+            setSelectValue(this.refs?.select ?? null, this._field)
+        }
+    }
+
+    private publish() {
+        const detail: SortChangeDetail = { field: this._field }
+        this.dispatchEvent(
+            new CustomEvent(EVENTS.SORT_CHANGE, {
+                detail,
+                bubbles: true,
+                composed: true,
+            })
+        )
     }
 }
 
