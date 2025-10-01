@@ -1,3 +1,8 @@
 {
-    "*.{ts}": ["eslint --fix", "prettier --write", "git add"]
+    "*.{ts}": [
+        "eslint --fix",
+        "prettier --write",
+        "vitest related --run",
+        "git add"
+    ]
 }

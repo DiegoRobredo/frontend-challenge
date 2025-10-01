@@ -1,12 +1,18 @@
+/// <reference types="vitest" />
+
 import { defineConfig } from 'vite'
-import path from 'path'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, './src'),
-            '@assets': path.resolve(__dirname, './src/assets'),
-            '@components': path.resolve(__dirname, './src/components'),
+            '@': '/src',
+            '@/components': '/src/components',
         },
     },
+    test: {
+        globals: true,
+        environment: 'jsdom',
+    },
+    plugins: [tsconfigPaths()],
 })
