@@ -19,6 +19,7 @@ export function relativeFormatDate(date: Date | string | undefined): string {
     const diffInMs = Math.floor((targetDate.getTime() - now.getTime()) / 1000)
     const rtf = new Intl.RelativeTimeFormat('en', { style: 'short' })
 
+    //TODO: Fix this to make it readable and maintainable
     if (Math.abs(diffInMs) < MINUTE_IN_SECONDS) {
         return rtf.format(Math.round(diffInMs), 'second')
     } else if (Math.abs(diffInMs) < HOUR_IN_SECONDS) {
