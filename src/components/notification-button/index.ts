@@ -1,6 +1,7 @@
 import { renderShell, setCount } from './interface'
 import { attachEvents } from './events'
 import { EVENTS } from '@/utils/constants'
+import { normalizeCount, reflectAttrIfNeeded } from './logic'
 
 export class NotificationButton extends HTMLElement {
     static get observedAttributes() {
@@ -18,14 +19,16 @@ export class NotificationButton extends HTMLElement {
         const next = Number.isFinite(value) ? Number(value) : 0
         if (this._count === next) return
         this._count = next
-        this.setAttribute('count', String(next))
+        this.setAttribute('count', !isNaN(next) ? String(next) : '0')
         setCount(this, next)
     }
 
     connectedCallback(): void {
+        // Initialize count from attribute if present
         if (this.hasAttribute('count')) {
-            const parsed = Number(this.getAttribute('count'))
-            this._count = Number.isFinite(parsed) ? parsed : 0
+            const normalized = normalizeCount(this.getAttribute('count'))
+            this._count = normalized
+            reflectAttrIfNeeded(this, 'count', String(normalized))
         }
 
         renderShell(this, this._count)
@@ -43,12 +46,19 @@ export class NotificationButton extends HTMLElement {
     attributeChangedCallback(
         name: string,
         _old: string | null,
-        val: string | null
+        _new: string | null
     ) {
-        if (name === 'count') {
-            const next = Number.isFinite(Number(val)) ? Number(val) : 0
-            this._count = next
-            setCount(this, next)
+        if (name !== 'count') return
+        const normalized = normalizeCount(_new)
+
+        if (_new !== String(normalized)) {
+            reflectAttrIfNeeded(this, 'count', String(normalized))
+            return
+        }
+
+        if (this._count !== normalized) {
+            this._count = normalized
+            setCount(this, normalized)
         }
     }
 

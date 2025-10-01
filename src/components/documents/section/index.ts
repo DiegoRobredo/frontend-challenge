@@ -55,8 +55,14 @@ export class DocumentsSection extends HTMLElement {
     }
 
     private async fetchAndFill() {
-        this.data = await fetchDocuments()
-        this.renderData()
+        try {
+            this.data = await fetchDocuments()
+            this.renderData()
+        } catch (error) {
+            this.data = []
+            this.renderData()
+            console.error('Error fetching documents:', error)
+        }
     }
 
     private renderData() {
