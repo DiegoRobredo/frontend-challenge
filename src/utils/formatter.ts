@@ -16,23 +16,22 @@ export function relativeFormatDate(date: Date | string | undefined): string {
     }
 
     const now = new Date()
-    const diffInMs = Math.floor((targetDate.getTime() - now.getTime()) / 1000)
+
+    const diffInMs = Math.floor((-now.getTime() + targetDate.getTime()) / 1000)
     const rtf = new Intl.RelativeTimeFormat('en', { style: 'short' })
 
-    //TODO: Fix this to make it readable and maintainable
-    if (Math.abs(diffInMs) < MINUTE_IN_SECONDS) {
-        return rtf.format(Math.round(diffInMs), 'second')
-    } else if (Math.abs(diffInMs) < HOUR_IN_SECONDS) {
-        return rtf.format(Math.round(diffInMs / MINUTE_IN_SECONDS), 'minute')
-    } else if (Math.abs(diffInMs) < DAY_IN_SECONDS) {
-        return rtf.format(Math.round(diffInMs / HOUR_IN_SECONDS), 'hour')
-    } else if (Math.abs(diffInMs) < WEEK_IN_SECONDS) {
-        return rtf.format(Math.round(diffInMs / DAY_IN_SECONDS), 'day')
-    } else if (Math.abs(diffInMs) < MONTH_IN_SECONDS) {
-        return rtf.format(Math.round(diffInMs / WEEK_IN_SECONDS), 'week')
-    } else if (Math.abs(diffInMs) < YEAR_IN_SECONDS) {
-        return rtf.format(Math.round(diffInMs / MONTH_IN_SECONDS), 'month')
-    } else {
+    if (Math.abs(diffInMs) >= YEAR_IN_SECONDS)
         return rtf.format(Math.round(diffInMs / YEAR_IN_SECONDS), 'year')
-    }
+    if (Math.abs(diffInMs) >= MONTH_IN_SECONDS)
+        return rtf.format(Math.round(diffInMs / MONTH_IN_SECONDS), 'month')
+    if (Math.abs(diffInMs) >= WEEK_IN_SECONDS)
+        return rtf.format(Math.round(diffInMs / WEEK_IN_SECONDS), 'week')
+    if (Math.abs(diffInMs) >= DAY_IN_SECONDS)
+        return rtf.format(Math.round(diffInMs / DAY_IN_SECONDS), 'day')
+    if (Math.abs(diffInMs) >= HOUR_IN_SECONDS)
+        return rtf.format(Math.round(diffInMs / HOUR_IN_SECONDS), 'hour')
+    if (Math.abs(diffInMs) >= MINUTE_IN_SECONDS)
+        return rtf.format(Math.round(diffInMs / MINUTE_IN_SECONDS), 'minute')
+
+    return rtf.format(Math.round(diffInMs), 'second')
 }
