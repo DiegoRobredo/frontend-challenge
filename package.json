@@ -8,8 +8,11 @@
         "build": "tsc && vite build",
         "preview": "vite preview",
         "prepare": "husky",
-        "test": "vitest",
-        "test:changed": "vitest --changed --run"
+        "vitest:run": "vitest",
+        "test:changed": "vitest --changed --run",
+        "cy:open": "cypress open",
+        "cy:run": "cypress run",
+        "test": "vitest --run && cypress run"
     },
     "devDependencies": {
         "@eslint/js": "9.36.0",

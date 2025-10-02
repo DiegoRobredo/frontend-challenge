@@ -4,7 +4,7 @@ export function renderShell(root: HTMLElement, field: TSortField): void {
     root.innerHTML = `
     <div class="sort-box">
       <label class="label" for="sort">Sort by:</label>
-      <select class="select" name="sort" id="sort">
+      <select class="select" name="sort" id="sort" data-testid="sort-select" aria-label="Sort documents">
         <option value="" disabled ${field === '' ? 'selected' : ''} hidden>
           Select sorting…
         </option>

@@ -4,8 +4,8 @@ import { LIST, GRID } from './constants'
 export function renderShell(root: HTMLElement, mode: TViewMode): void {
     root.innerHTML = `
     <div class="segmented-control" aria-label="View mode">
-      <button id="button-list" class="segmented-control__button" role="tab" data-mode="list"><i class="fa-solid fa-list" aria-hidden="true"></i></button>
-      <button id="button-grid" class="segmented-control__button" role="tab" data-mode="grid"><i class="fa-solid fa-grip" aria-hidden="true"></i></button>
+      <button id="button-list" class="segmented-control__button" role="tab" data-mode="list" data-testid="button-list"><i class="fa-solid fa-list" aria-hidden="true"></i></button>
+      <button id="button-grid" class="segmented-control__button" role="tab" data-mode="grid" data-testid="button-grid"><i class="fa-solid fa-grip" aria-hidden="true"></i></button>
     </div>
   `
     setValue(root, mode)

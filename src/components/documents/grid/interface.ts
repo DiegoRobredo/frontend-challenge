@@ -21,8 +21,8 @@ export function renderCard(doc: TDocument): string {
     const attachments = doc.Attachments ?? []
 
     return `
-    <article class="doc-card" data-id="${doc.ID}">
-      <span class="doc-title doc-card__title">${doc.Title}</span>
+    <article class="doc-card" data-id="${doc.ID}" data-testid="doc-card">
+      <span class="doc-title doc-card__title" data-testid="grid-title">${doc.Title}</span>
       <span class="doc-version">Version ${doc.Version}</span>
       <span class="doc-date">Created ${relativeFormatDate(doc.CreatedAt)}</span>
       <span class="doc-date">Updated ${relativeFormatDate(doc.UpdatedAt)}</span>

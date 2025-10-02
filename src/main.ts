@@ -5,17 +5,23 @@ import type { TNotification, TDocument, TDocumentVersion } from '@/types'
 import { WS_URL } from './server/endpoints'
 import { NewDocumentDialog } from '@/templates/new-document-dialog'
 
-//TODO: Mover a otro sitio para controlar mejor el websocket
-startWS((notification: TNotification) => {
-    // callback al recibir datos
-    document.dispatchEvent(
-        new CustomEvent('notification-received', {
-            detail: { notification },
-            bubbles: true,
-            composed: true,
-        })
-    )
-}, WS_URL)
+//TODO: Refactor WebSocket initialization and locate it in a more appropriate place
+// Disable WebSocket in E2E tests to prevent interference with Cypress
+const w = window as Window & { __E2E_DISABLE_WS__?: boolean }
+const DISABLE_WS =
+    w.__E2E_DISABLE_WS__ === true || import.meta.env.VITE_DISABLE_WS === 'true'
+
+if (!DISABLE_WS) {
+    startWS((notification: TNotification) => {
+        document.dispatchEvent(
+            new CustomEvent('notification-received', {
+                detail: { notification },
+                bubbles: true,
+                composed: true,
+            })
+        )
+    }, WS_URL)
+}
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <header class="header">
@@ -23,8 +29,8 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     </header>
     <main class="main-content">
       <h1 class="main-title">Documents</h1>
-      <documents-section class="documents-section"></documents-section>
-      <button commandfor="new-document" command="show-modal" type="button" class="add-document_button" aria-label="Add document">+ Add document</button>
+      <documents-section data-testid="doc-section" class="documents-section"></documents-section>
+      <button data-testid="button-new-document" commandfor="new-document" command="show-modal" type="button" class="add-document_button" aria-label="Add document">+ Add document</button>
       ${NewDocumentDialog}
     </main>
 `

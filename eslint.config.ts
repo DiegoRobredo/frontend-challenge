@@ -11,6 +11,9 @@ export default defineConfig([
         'node_modules/**',
         'coverage/**',
         '__tests__/**',
+        'vite.config.ts',
+        'eslint.config.ts',
+        'cypress.config.ts',
     ]),
     {
         files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],

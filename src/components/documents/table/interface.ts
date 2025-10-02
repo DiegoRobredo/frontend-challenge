@@ -30,10 +30,10 @@ export function renderRow(doc: TDocument): string {
     const attachments = doc.Attachments ?? []
 
     return `
-    <tr class="docs-table__row" data-id="${doc.ID}">
+    <tr class="docs-table__row" data-id="${doc.ID}" data-testid="doc-row">
       <th scope="row">
         <div class="docs-table__row__header">
-          <span class="doc-title docs-table__title">${doc.Title}</span>
+          <span class="doc-title docs-table__title" data-testid="table-title">${doc.Title}</span>
           <span class="doc-version">Version ${doc.Version}</span>
           <span class="doc-date">Created ${relativeFormatDate(doc.CreatedAt)}</span>
           <span class="doc-date">Updated ${relativeFormatDate(doc.UpdatedAt)}</span>

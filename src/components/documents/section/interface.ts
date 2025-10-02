@@ -6,10 +6,10 @@ export function renderShell(root: HTMLElement): void {
       <sort-box id="sorter"></sort-box>
       <view-toggle id="toggle"></view-toggle>
     </header>
-    <section class="list-section" id="view-list">
+    <section class="list-section" id="view-list" data-testid="view-list">
       <docs-table id="docs-table"></docs-table>
     </section>
-    <section class="grid-section" id="view-grid" hidden inert>
+    <section class="grid-section" id="view-grid" hidden inert data-testid="view-grid">
       <docs-grid id="docs-grid"></docs-grid>
     </section>
   `
